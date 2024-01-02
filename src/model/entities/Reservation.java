@@ -4,7 +4,6 @@
  */
 package model.entities;
 
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -14,28 +13,26 @@ import java.util.concurrent.TimeUnit;
  * @author Rodrigo
  */
 public class Reservation {
-    
-    
+
     //Variaveris da classe
     private Integer roomNumber;
     private Date checkIn;
     private Date checkOut;
-    
-    
+
     // variavel sdf instanciando um formato de data 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    
+
     // metodo construtor padrão
     public Reservation() {
     }
-    
+
     // metodo construdor com argumentos
     public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
         this.roomNumber = roomNumber;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
     }
-    
+
     // get e set da variavel numero do quarto
     public Integer getRoomNumber() {
         return roomNumber;
@@ -44,12 +41,11 @@ public class Reservation {
     public void setRoomNumber(Integer roomNumber) {
         this.roomNumber = roomNumber;
     }
-    
+
     // apenas gets das variaveis check in e check out
     public Date getCheckIn() {
         return checkIn;
     }
-
 
     public Date getCheckOut() {
         return checkOut;
@@ -57,28 +53,39 @@ public class Reservation {
 
     // diff recebe a diferença de tempo entre checkOut e checkIn, necessário converter 
     // o resultado armazenado em diff que está em milesegundos para dias e retornar.
-    public long duration(){
+    public long duration() {
         long diff = checkOut.getTime() - checkIn.getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
-    
+
     //metodo para atualizar check in e check out
-    public void updateDates(Date checkIn, Date checkOut){
+    public String updateDates(Date checkIn, Date checkOut) {
+
+
+        Date now = new Date();
+        if (checkIn.before(now) || checkOut.before(now)) {
+            return "Error in reservation: Reservation dates for update must be future";
+        }
+        if (!checkOut.after(checkIn)) {
+            return"Error in reservation: Check-out date must be after check-in date";
+        }
+        
         this.checkIn = checkIn;
         this.checkOut = checkOut;
+        return null;        
     }
-    
+
     @Override
-    public String toString(){
-        return "Room"
+    public String toString() {
+        return "Room "
                 + roomNumber
                 + ", Check-in: "
                 + sdf.format(checkIn)
                 + " ,Check-out: "
-                +sdf.format(checkOut)
+                + sdf.format(checkOut)
                 + " , "
                 + duration()
                 + " nights ";
     }
-    
+
 }
